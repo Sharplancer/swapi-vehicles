@@ -31,31 +31,5 @@ const usersSlice = createSlice({
   }
 });
 
-const userActions = usersSlice.actions;
-
-export const fetchUsers = (search, currentPage) => {
-  return async (dispatch) => {
-    dispatch(userActions.usersRequest());
-    try {
-      const response = await fetch(`${API_URL}/?` + (search ? `search=${search}&` : ``) + `page=${currentPage}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      const responseData = await response.json();
-      if (!response.ok) {
-        throw new Error(responseData.message || response.statusText);
-      }
-
-      dispatch(userActions.usersRequestSuccess({
-        page: currentPage,
-        count: responseData.count,
-        results: responseData.results }));
-    } catch (error) {
-      dispatch(userActions.usersRequestFailure(error.message))
-    }
-  }
-}
 
 export default usersSlice
