@@ -31,5 +31,33 @@ const vehiclesSlice = createSlice({
   }
 });
 
+const userActions = vehiclesSlice.actions;
+
+export {
+  userActions
+}
+
+export const fetchVehicles = (urls) => {
+  return async (dispatch) => {
+    dispatch(userActions.vehiclesRequest());
+    try {
+      urls.map(async (url) => {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        const responseData = await response.json();
+        if (!response.ok) {
+          throw new Error(responseData.message || response.statusText);
+        }
+        dispatch(userActions.vehiclesRequestSuccess(responseData));
+      })
+    } catch (error) {
+      dispatch(userActions.vehiclesRequestFailure(error.message))
+    }
+  }
+}
 
 export default vehiclesSlice
